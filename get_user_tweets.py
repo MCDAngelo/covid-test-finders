@@ -6,7 +6,9 @@ def main():
     user_info_df = get_user_info(USERS_LIST, USER_FIELDS)
     n_rows = len(user_info_df.index)
     print(f"Retrieved {n_rows} row(s) of data for {len(USERS_LIST)} user(s) in the list.")
+    return user_info_df
 
 
 if __name__ == '__main__':
-    main()
+    user_info_df = main()
+    import pdb; pdb.set_trace()
