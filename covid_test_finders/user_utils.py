@@ -7,10 +7,6 @@ from covid_test_finders.constants import BASE_URL
 # export 'BEARER_TOKEN'='<your_bearer_token>'
 bearer_token = os.environ.get("BEARER_TOKEN")
 
-BASE_URL = 'https://api.twitter.com/2'
-
-# def daterange(start_date, end_date, freq):
-#     return pd.date_range(start=start_date, end=end_date, freq=freq)
 
 def bearer_oauth(r):
     """

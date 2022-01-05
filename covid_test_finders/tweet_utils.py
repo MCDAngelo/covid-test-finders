@@ -1,8 +1,7 @@
 import os
 import pandas as pd
 import requests
-# from covid_test_finders.constants import BASE_URL
-BASE_URL = 'https://api.twitter.com/2'
+from covid_test_finders.constants import BASE_URL
 
 
 # To set your environment variables in your terminal run the following line:
@@ -37,13 +36,9 @@ def connect_to_endpoint(url):
     return response.json()
 
 
-user_id = '1441129611144826880'
-tweet_timeline_url = get_tweet_timeline_url(user_id, 20)
-output = connect_to_endpoint(tweet_timeline_url)
-print(output)
-# def get_user_info(users_list, user_fields):
-#     url = create_url(users_list,user_fields)
-#     response = connect_to_endpoint(url)
-#     response_list = response.get('data')
-#     response_df = pd.DataFrame(response_list)
-#     return response_df
+def get_user_timeline(user_id, max_results):
+    url = get_tweet_timeline_url(user_id, max_results)
+    response = connect_to_endpoint(url)
+    response_list = response.get('data')
+    response_df = pd.DataFrame(response_list)
+    return response_df
