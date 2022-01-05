@@ -19,7 +19,7 @@ def bearer_oauth(r):
     return r
 
 
-def create_url(user_names_list, user_fields ):
+def create_user_id_url(user_names_list, user_fields):
     # Specify the usernames that you want to lookup below
     # You can enter up to 100 comma-separated values.
     user_names = ','.join(user_names_list) if len(user_names_list)>1 else user_names_list[0]
@@ -42,9 +42,19 @@ def connect_to_endpoint(url):
     return response.json()
 
 
-def get_user_info(users_list, user_fields):
-    url = create_url(users_list,user_fields)
-    response = connect_to_endpoint(url)
+def clean_response(response):
     response_list = response.get('data')
     response_df = pd.DataFrame(response_list)
+    return response_df
+
+
+def retrieve_clean_response(url):
+    response = connect_to_endpoint(url)
+    response_df = clean_response(response)
+    return response_df
+
+
+def get_user_info(users_list, user_fields):
+    url = create_user_id_url(users_list,user_fields)
+    response_df = retrieve_clean_response(url)
     return response_df
