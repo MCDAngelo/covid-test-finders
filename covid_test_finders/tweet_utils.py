@@ -1,5 +1,6 @@
 import pandas as pd
 
+import datetime as dt
 
 from covid_test_finders.constants import BASE_URL
 from covid_test_finders.utils import retrieve_clean_response
@@ -7,11 +8,21 @@ from covid_test_finders.utils import retrieve_clean_response
 metadata_col = 'public_metrics'
 
 
-def create_tweet_timeline_url(user_id, max_results=20):
+def create_tweet_timeline_url(
+    user_id,
+    max_results,
+    start_date,
+    end_date,
+):
     """
-    Creates the url to pull timeline of tweets for user_id
+    Creates the url to pull timeline of tweets for user_id starting at start_time
     """
-    url = f"{BASE_URL}/users/{user_id}/tweets?max_results={max_results}"
+    start_date = start_date.strftime('%Y-%m-%dT%H:%M:%S.00Z')
+    end_date = end_date.strftime('%Y-%m-%dT%H:%M:%S.00Z')
+    url = (
+        f"{BASE_URL}/users/{user_id}/tweets?start_time={start_date}&end_time={end_date}"
+        f"&tweet.fields=created_at&max_results={max_results}"
+    )
     print(url)
     return url
 
@@ -51,17 +62,38 @@ def get_clean_tweets(tweet_ids_list, metadata_col):
     """
     tweets_url = create_multiple_tweets_url(tweet_ids_list)
     tweets_df = retrieve_clean_response(tweets_url)
+    print(tweets_df)
     clean_metadata_tweets_df = clean_tweet_metadata(tweets_df)
     clean_tweets_df = get_hashtags(clean_metadata_tweets_df)
+    clean_tweets_df = clean_tweets_df.sort_values(by=['id'])
     return clean_tweets_df
 
 
-def get_user_tweets(user_id, max_results):
+def get_user_tweets(user_id, max_results, start_date, end_date):
     """
     Returns a dataframe containing tweets and asscoiated metadata for a user
     """
-    timeline_url = create_tweet_timeline_url(user_id, max_results)
-    timeline_df = retrieve_clean_response(timeline_url)
-    tweet_ids_list = timeline_df['id'].tolist()
-    clean_tweets_df = get_clean_tweets(tweet_ids_list, metadata_col)
+    clean_tweets_df_list = []
+    i=1
+    print(f"initial start_date: {start_date} and end_date: {end_date}")
+
+    while start_date <= dt.datetime.today() + dt.timedelta(days=-1):
+        print(f"run {i} through while loop")
+        timeline_url = create_tweet_timeline_url(user_id, max_results, start_date, end_date)
+        tmp_timeline_df = retrieve_clean_response(timeline_url)
+        tweet_ids_list = tmp_timeline_df['id'].tolist()
+        if len(tweet_ids_list) > 0 :
+            tmp_clean_tweets_df = get_clean_tweets(tweet_ids_list, metadata_col)
+            clean_tweets_df_list.append(tmp_clean_tweets_df)
+            print(f"min and max created_at for tmp_timeline_df: {min(tmp_timeline_df.created_at)} - {max(tmp_timeline_df.created_at)}")
+            start_date = max(tmp_timeline_df.created_at)
+            start_date = dt.datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S.%fZ')
+            end_date = start_date + dt.timedelta(days=2)
+            print(f"updated start_date: {start_date} and end_date: {end_date}")
+        else:
+            start_date = end_date
+            end_date = start_date + dt.timedelta(days=2)
+        i=i+1
+    print('exited while loop')
+    clean_tweets_df = pd.concat(clean_tweets_df_list)
     return clean_tweets_df
