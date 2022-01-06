@@ -1,7 +1,8 @@
-import pandas as pd
-from covid_test_finders.constants import USER_FIELDS, USERS_LIST
+from covid_test_finders.constants import USER_FIELDS
+from covid_test_finders.constants import USERS_LIST
 from covid_test_finders.tweet_utils import get_user_tweets
 from covid_test_finders.user_utils import get_user_info
+
 
 acct_name = 'COVID Test Finders'
 acct_id_col = 'id'

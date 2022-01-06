@@ -1,8 +1,11 @@
 import os
+
 import pandas as pd
 import requests
 from dotenv import load_dotenv
+
 from covid_test_finders.constants import BASE_URL
+
 
 load_dotenv()
 # Set a .env file with your bearer token
@@ -25,10 +28,10 @@ def create_user_id_url(user_names_list, user_fields):
     """
     # Specify the usernames that you want to lookup below
     # You can enter up to 100 comma-separated values.
-    user_names = ','.join(user_names_list) if len(user_names_list)>1 else user_names_list[0]
+    user_names = ','.join(user_names_list) if len(user_names_list) > 1 else user_names_list[0]
 
     usernames = f"usernames={user_names}"
-    url = "https://api.twitter.com/2/users/by?{}&{}".format(usernames, user_fields)
+    url = f"{BASE_URL}/users/by?{usernames}&{user_fields}"
     print(url)
     return url
 
@@ -70,6 +73,6 @@ def get_user_info(users_list, user_fields):
     """
     Returns user information for a set of users in users_list
     """
-    url = create_user_id_url(users_list,user_fields)
+    url = create_user_id_url(users_list, user_fields)
     response_df = retrieve_clean_response(url)
     return response_df
