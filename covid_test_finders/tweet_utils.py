@@ -24,10 +24,18 @@ def create_multiple_tweets_url(tweet_ids_list):
     return url
 
 
+def clean_tweet_metadata(df, meta_data_col='public_metrics'):
+    expanded_col = pd.json_normalize(df[meta_data_col])
+    df = (df.join(expanded_col)
+            .drop(columns = meta_data_col))
+    return df
+
+
 def get_user_tweets(user_id, max_results):
     timeline_url = create_tweet_timeline_url(user_id, max_results)
     timeline_df = retrieve_clean_response(timeline_url)
     tweet_ids_list = timeline_df['id'].tolist()
     tweets_url = create_multiple_tweets_url(tweet_ids_list)
     tweets_df = retrieve_clean_response(tweets_url)
-    return tweets_df
+    clean_tweets_df = clean_tweet_metadata(tweets_df)
+    return clean_tweets_df
