@@ -1,16 +1,8 @@
-import os
-
 import pandas as pd
-from dotenv import load_dotenv
+
 
 from covid_test_finders.constants import BASE_URL
-from covid_test_finders.user_utils import retrieve_clean_response
-
-
-load_dotenv()
-# Set a .env file with your bearer token
-# BEARER_TOKEN=<your_bearer_token>
-bearer_token = os.getenv("BEARER_TOKEN")
+from covid_test_finders.utils import retrieve_clean_response
 
 metadata_col = 'public_metrics'
 
