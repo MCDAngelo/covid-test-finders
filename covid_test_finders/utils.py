@@ -4,8 +4,6 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-from covid_test_finders.constants import BASE_URL
-
 
 load_dotenv()
 # Set a .env file with your bearer token

@@ -1,5 +1,5 @@
-import pathlib
 import datetime as dt
+import pathlib
 
 from covid_test_finders.constants import USER_FIELDS
 from covid_test_finders.constants import USERS_LIST
