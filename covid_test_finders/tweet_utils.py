@@ -40,7 +40,10 @@ def create_multiple_tweets_url(tweet_ids_list):
     Returns the url to pull tweet data for tweets in tweet_ids_list
     """
     tweet_ids = ','.join(tweet_ids_list) if len(tweet_ids_list) > 1 else tweet_ids_list[0]
-    url = f"{BASE_URL}/tweets?ids={tweet_ids}&tweet.fields=public_metrics,created_at"
+    url = (
+        f"{BASE_URL}/tweets?ids={tweet_ids}"
+        "&tweet.fields=public_metrics,created_at,referenced_tweets,conversation_id,context_annotations,entities"
+        )
     print(url)
     return url
 
