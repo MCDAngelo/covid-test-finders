@@ -48,7 +48,7 @@ def create_multiple_tweets_url(tweet_ids_list):
     return url
 
 
-def clean_tweet_metadata(df, metadata_col=metadata_col):
+def clean_tweet_metadata(df, metadata_col):
     """
     Unnests metadata contained in json format from a column (metadata_col) and returns
     df with metadata in new columns
@@ -73,7 +73,7 @@ def get_clean_tweets(tweet_ids_list, metadata_col):
     """
     tweets_url = create_multiple_tweets_url(tweet_ids_list)
     tweets_df = retrieve_clean_response(tweets_url)
-    clean_metadata_tweets_df = clean_tweet_metadata(tweets_df)
+    clean_metadata_tweets_df = clean_tweet_metadata(tweets_df, metadata_col)
     clean_tweets_df = get_hashtags(clean_metadata_tweets_df)
     clean_tweets_df = clean_tweets_df.sort_values(by=['id'])
     return clean_tweets_df
